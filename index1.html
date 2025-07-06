@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Advanced To-Do App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #e7f3ff;
+    }
+    h2 {
+      color: #333;
+    }
+    input {
+      padding: 10px;
+      width: 250px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+    li {
+      background: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 5px;
+    }
+    .done {
+      text-decoration: line-through;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>📝 Advanced To-Do App</h2>
+  <input type="text" id="taskInput" placeholder="Enter a new task" />
+  <button onclick="addTask()">Add</button>
+
+  <ul id="taskList"></ul>
+
+  <script>
+    let tasks = [];
+
+    // Load tasks from localStorage
+    window.onload = () => {
+      const storedTasks = localStorage.getItem("tasks");
+      if (storedTasks) {
+        tasks = JSON.parse(storedTasks);
+        renderTasks();
+      }
+    };
+
+    // Add task
+    function addTask() {
+      const input = document.getElementById("taskInput");
+      const text = input.value.trim();
+      if (text === "") return;
+
+      tasks.push({ text: text, done: false });
+      input.value = "";
+      saveAndRender();
+    }
+
+    // Press Enter to add task
+    document.getElementById("taskInput").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        addTask();
+      }
+    });
+
+    // Render task list
+    function renderTasks() {
+      const list = document.getElementById("taskList");
+      list.innerHTML = "";
+
+      tasks.forEach((task, index) => {
+        const li = document.createElement("li");
+
+        const span = document.createElement("span");
+        span.textContent = task.text;
+        if (task.done) span.classList.add("done");
+
+        span.onclick = () => {
+          tasks[index].done = !tasks[index].done;
+          saveAndRender();
+        };
+
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "❌";
+        delBtn.onclick = () => {
+          tasks.splice(index, 1);
+          saveAndRender();
+        };
+
+        li.appendChild(span);
+        li.appendChild(delBtn);
+        list.appendChild(li);
+      });
+    }
+
+    // Save to localStorage and render
+    function saveAndRender() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      renderTasks();
+    }
+  </script>
+
+</body>
+</html>
